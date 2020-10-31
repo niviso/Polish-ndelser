@@ -1,5 +1,5 @@
 # Polishändelser
-A react native app using the Swedish police open api
+A react native app using the Swedish police open api<br>
 The app is 100% in Swedish also, besides well this readme.
 
 ## CREDITS
