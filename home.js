@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import { Button, View, Text,TextInput,Image,ScrollView,TouchableOpacity,Dimensions,StyleSheet,ActivityIndicator,RefreshControl } from 'react-native';
 import Constants from 'expo-constants';
-
+import Types from './brott_types';
 function FetchData(){
   return fetch('https://polisen.se/api/events')
   .then(response => response.json())
@@ -26,18 +26,6 @@ export default function Home({ navigation, route }) {
     });
   }
 },[data]);
-  GetTypeIcon = (type) => {
-    var icon = null;
-    switch(type) {
-      case "Trafikolycka":
-        icon = "🚦"
-        break;
-      default:
-        icon = "🚨"
-        break;
-    }
-    return icon;
-  }
   GetButtons = () => {
     if(!data){
       return;
@@ -53,9 +41,9 @@ export default function Home({ navigation, route }) {
         backgroundColor: 'white',
         width: '100%',
         height: 20,
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         borderBottomStyle: 'solid',
-        borderBottomColor: 'black',
+        borderBottomColor: 'rgba(0,0,0,0.2)',
         height: 70,
         display: 'flex',
         alignItems: 'center',
@@ -65,11 +53,15 @@ export default function Home({ navigation, route }) {
       }}
     >
     <View style={{width: '15%', display: 'flex',justifyContent:'center',alignItems:'center'}}>
-    <Text>
-    {GetTypeIcon(item.type)}
+    <Text style={{fontSize: 18}}>
+    {Types[item.type] || '🚨'}
     </Text>
     </View>
-    <Text style={{width: '65%',fontSize: 20,color: 'black'}}>{item.name.split(',')[1]},{item.location.name}</Text>
+    <View style={{width: '65%'}}>
+    <Text style={{width: '100%',fontSize: 20,color: 'black'}}>{item.name.split(', ')[1]}</Text>
+    <Text style={{width: '100%',fontSize: 14,color: 'black',opacity: 0.5}}>{item.location.name}</Text>
+
+    </View>
     <View style={{width: '15%', display: 'flex',justifyContent:'center',alignItems:'center'}}>
     <Text style={{fontSize: 12,color:'red'}}>Nyss</Text>
     </View>
