@@ -5,10 +5,11 @@ import { Button, View, Text,TextInput,Image,ScrollView,TouchableOpacity,Dimensio
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from './components/icon';
-import Home from './home';
-import Details from './details';
-import OnboardingScreen from './onboarding';
-import SettingsScreen from './settings';
+import Home from './screens/home';
+import Details from './screens/details';
+import OnboardingScreen from './screens/onboarding';
+import SettingsScreen from './screens/settings';
+import {AppProvider} from './context/appContext';
 
 
 
@@ -18,8 +19,9 @@ const Stack = createStackNavigator();
 function App() {
   const navigationRef = useRef(null)
   return (
+    <AppProvider>
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName="Home"
+      <Stack.Navigator initialRouteName="Onboarding"
       screenOptions={{
   headerBackTitle: "Tillbaka"
 }}>
@@ -64,6 +66,7 @@ function App() {
         }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </AppProvider>
   );
 }
 

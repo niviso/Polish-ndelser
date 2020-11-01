@@ -1,18 +1,14 @@
-import React,{useState} from 'react';
+import React,{useState,useContext} from 'react';
 import { Button,Text,Image,Switch,View} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Kommuner from './kommuner';
+import Kommuner from '../kommuner';
+import {AppContext} from '../context/appContext';
+import SetRegion from '../components/setRegion';
 export default function SettingsScreen({ navigation, route }) {
   const [hasPush,setHasPush] = useState(false);
-  const SetRegion = (value) => {
+  const [state,setState] = useContext(AppContext);
 
-  }
-  const GetLabels = () => {
-    const Labels = [];
-    Kommuner.map((kommun) => Labels.push({label: kommun, value: kommun}));
-    return Labels;
-  }
   return (
     <View style={{display: 'flex',justifyContent:'space-between',height: '100%',width: '100%',paddingBottom: 20}}>
     <View>
@@ -26,17 +22,7 @@ export default function SettingsScreen({ navigation, route }) {
       <View style={{width: '100%',paddingLeft: 15,paddingRight: 15,height: 60,borderBottomColor:'black',borderBottomWidth: 2,borderBottomStyle: 'solid',display: 'flex',flexDirection: 'row',alignItems:'center',justifyContent:'space-between'}}>
       <Text style={{fontSize: 18}}>🗺️ Region: </Text>
 
-      <DropDownPicker
-          items={GetLabels()}
-          defaultValue='Stockholm'
-          containerStyle={{height: 40,}}
-          style={{backgroundColor: '#fafafa', width: 180}}
-          itemStyle={{
-              justifyContent: 'flex-start'
-          }}
-          dropDownStyle={{backgroundColor: '#fafafa'}}
-          onChangeItem={SetRegion}
-      />
+      <SetRegion/>
       </View>
     </View>
     <View>

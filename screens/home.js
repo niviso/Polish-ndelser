@@ -1,32 +1,31 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { Button, View, Text,TextInput,Image,ScrollView,TouchableOpacity,Dimensions,StyleSheet,ActivityIndicator,RefreshControl } from 'react-native';
 import Constants from 'expo-constants';
-import Types from './brott_types';
+import Types from '../brott_types';
+import {AppContext} from '../context/appContext';
+
 function FetchData(){
   return fetch('https://polisen.se/api/events')
   .then(response => response.json())
-  .then(data =>{
+  .then(data => {
     return data;
-  }
-  );
+  });
 }
 
 
 export default function Home({ navigation, route }) {
-  const [loading,setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [data,setData] = useState();
+  const [state,setState] = useContext(AppContext);
   useEffect(()=>{
-    setLoading(true);
-  if(!loading && !data){
-    FetchData().then(response => {
-      setLoading(false);
-      setData(response);
-      console.log("FETCH");
-    });
-  }
-},[data]);
-  GetButtons = () => {
+    navigation.setOptions({ title: 'Händelser i ' + state.region });
+    if(!refreshing){
+    onRefresh();
+    console.log("UPDATE");
+    }
+  },[data,state.region]);
+
+  const GetButtons = () => {
     if(!data){
       return;
     }
@@ -77,39 +76,22 @@ const wait = (timeout) => {
   });
 }
 
-const onRefresh = React.useCallback(() => {
+const onRefresh = () => {
   setRefreshing(true);
-  console.log("TRIGGER");
   FetchData().then(response => {
     setData(response);
-    console.log("FETCH");
+    setRefreshing(false)
   });
-  wait(2000).then(() => setRefreshing(false));
-}, []);
+};
+
   return (
     <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    {GetButtons()}
-    {loading && <ActivityIndicator style={{position:'absolute',top:(Dimensions.get('window').height/2)-100}}/>}
-    </View>
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        {GetButtons()}
+      </View>
     </ScrollView>
   );
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 0
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: 'pink',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
