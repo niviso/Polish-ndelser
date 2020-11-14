@@ -1,6 +1,6 @@
 import React,{useState,useContext} from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Kommuner from '../../kommuner';
+import Kommuner from '../../api/kommuner';
 import {AppContext} from '../../context/appContext';
 
 

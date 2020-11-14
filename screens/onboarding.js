@@ -12,7 +12,7 @@ export default function OnboardingScreen({ navigation, route }) {
     <Onboarding
     nextLabel="Nästa"
     skipLabel="Hoppa över"
-    containerStyles={{padding: 20,width: '100%',height: '100%'}}
+    containerStyles={{padding: 10,width: '100%',height: '100%'}}
     subTitleStyles={{height: '30%'}}
       pages={[
         {
@@ -26,7 +26,12 @@ export default function OnboardingScreen({ navigation, route }) {
           image: <Image source={require('../assets/icons/gps.png')} style={{width: 200,height: 200}}/>,
           title: 'Se uppdateringar direkt ifrån ditt område',
           subtitle: 'Du kan välja reigon i ⚙ inställningar',
-        },
+        },{
+            backgroundColor: '#fff',
+            image: <Image source={require('../assets/icons/Stalk.png')} style={{width: 200,height: 200,marginLeft: 60}}/>,
+            title: 'Aktivera pushnotiser för att få händelserna direkt',
+            subtitle: 'Du kan aktivera pushnotiser i ⚙ inställningar',
+          },
       ]}
       onDone={() => Done()}
       onSkip={() => Done()}

@@ -1,35 +1,36 @@
 import React,{useState,useEffect,useContext} from 'react';
-import { Button, View, Text,TextInput,Image,ScrollView,TouchableOpacity,Dimensions,StyleSheet,ActivityIndicator,RefreshControl } from 'react-native';
-import Constants from 'expo-constants';
-import Types from '../brott_types';
+import { View, Text,ScrollView,TouchableOpacity,ActivityIndicator,RefreshControl } from 'react-native';
+import Types from '../api/brott_types';
 import {AppContext} from '../context/appContext';
-
-function FetchData(){
-  return fetch('https://polisen.se/api/events')
-  .then(response => response.json())
-  .then(data => {
-    return data;
-  });
-}
-
+import moment from 'moment';
+import 'moment/locale/sv';
+import {FetchData} from '../api/fetch';
+import AsyncStorageHelper from '../helpers/asyncStorageHelper';
+import { registerForPushNotificationsAsync,sendPushNotification } from '../helpers/pushNotificationHelper';
 
 export default function Home({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
-  const [data,setData] = useState();
   const [state,setState] = useContext(AppContext);
+
   useEffect(()=>{
     navigation.setOptions({ title: 'Händelser i ' + state.region });
     if(!refreshing){
     onRefresh();
-    console.log("UPDATE");
     }
-  },[data,state.region]);
+  },[state.region]);
 
   const GetButtons = () => {
-    if(!data){
-      return;
+
+    const GetDate = (date) => {
+      date = date.split(" +")[0];
+      return null;
+      if(!moment(date).isValid()){
+        date = date.replace(" "," 0");
+      }
+      date = moment(date).fromNow();
+      return date.substr(0,1).toUpperCase() + date.substr(1,date.length -1 );
     }
-    const buttons = data.map(item =>
+    const buttons = state.data.map(item =>
     <TouchableOpacity
       onPress={() => {
         // Pass params back to home screen
@@ -52,17 +53,17 @@ export default function Home({ navigation, route }) {
       }}
     >
     <View style={{width: '15%', display: 'flex',justifyContent:'center',alignItems:'center'}}>
-    <Text style={{fontSize: 18}}>
+    <Text style={{fontSize: 24}}>
     {Types[item.type] || '🚨'}
     </Text>
     </View>
-    <View style={{width: '65%'}}>
-    <Text style={{width: '100%',fontSize: 20,color: 'black'}}>{item.name.split(', ')[1]}</Text>
-    <Text style={{width: '100%',fontSize: 14,color: 'black',opacity: 0.5}}>{item.location.name}</Text>
+    <View style={{width: '55%'}}>
+    <Text style={{width: '100%',fontSize: 16,color: 'black'}}>{item.name.split(', ')[1]}</Text>
+    <Text style={{width: '100%',fontSize: 12,color: 'black',opacity: 0.5}}>{item.location.name}</Text>
 
     </View>
-    <View style={{width: '15%', display: 'flex',justifyContent:'center',alignItems:'center'}}>
-    <Text style={{fontSize: 12,color:'red'}}>Nyss</Text>
+    <View style={{width: '30%', display: 'flex',justifyContent:'center',alignItems:'center'}}>
+    <Text style={{fontSize: 10,color:'black',opacity: 0.9, width:'100%'}}>{GetDate(item.datetime)}</Text>
     </View>
     </TouchableOpacity>
 
@@ -70,17 +71,27 @@ export default function Home({ navigation, route }) {
   return buttons;
 }
 
-const wait = (timeout) => {
-  return new Promise(resolve => {
-    setTimeout(resolve, timeout);
-  });
-}
-
 const onRefresh = () => {
+  registerForPushNotificationsAsync().then(response => {
+    sendPushNotification(sendPushNotification);
+  });
   setRefreshing(true);
-  FetchData().then(response => {
-    setData(response);
-    setRefreshing(false)
+  FetchData(state.region).then(response => {
+    let tmpState = JSON.parse(JSON.stringify(state));
+    state.data = response;
+    setState(state);
+    setRefreshing(false);
+    AsyncStorageHelper.get("appdata").then(data => {
+      data = JSON.parse(data);
+      if(data && response){
+        if(response[0].id != data[0].id){
+          AsyncStorageHelper.set("appdata",JSON.stringify(response));
+        }
+      }
+      if(!data){
+        AsyncStorageHelper.set("appdata",JSON.stringify(response));
+      }
+    });
   });
 };
 

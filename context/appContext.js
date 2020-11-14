@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import {Dimensions} from 'react-native';
 import moment from 'moment';
 const AppContext = React.createContext([{}, () => {}]);
 
 const AppProvider = (props) => {
-  const [appState, setAppState] = useState({
+  const [state,setState] = useContext(AppContext);
+
+    const [appState, setAppState] = useState({
     currentDate: moment().format('YYYY-MM-DD'),
-    region: 'Stockholm'
+    region: 'Stockholm',
+    lastUpdated: moment().format('YYYY-MM-DD'),
+    data: []
   });
 
   return (
