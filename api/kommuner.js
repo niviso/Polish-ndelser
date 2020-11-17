@@ -1,4 +1,5 @@
 const Kommuner = [
+"",
 "Ale",
 "Alingsås",
 "Alvesta",

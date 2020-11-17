@@ -8,7 +8,7 @@ const AppProvider = (props) => {
 
     const [appState, setAppState] = useState({
     currentDate: moment().format('YYYY-MM-DD'),
-    region: 'Stockholm',
+    region: "",
     lastUpdated: moment().format('YYYY-MM-DD'),
     data: []
   });

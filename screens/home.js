@@ -6,14 +6,16 @@ import moment from 'moment';
 import 'moment/locale/sv';
 import {FetchData} from '../api/fetch';
 import AsyncStorageHelper from '../helpers/asyncStorageHelper';
-import { registerForPushNotificationsAsync,sendPushNotification } from '../helpers/pushNotificationHelper';
 
 export default function Home({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
   const [state,setState] = useContext(AppContext);
 
   useEffect(()=>{
-    navigation.setOptions({ title: 'Händelser i ' + state.region });
+    AsyncStorageHelper.get("@app:region").then(result => {
+      setState({...state,region: result || ''});
+    });
+    navigation.setOptions({ title: 'Händelser i ' + (state.region.length === 0 ? 'hela Sverige' : state.region) });
     if(!refreshing){
     onRefresh();
     }
@@ -72,9 +74,7 @@ export default function Home({ navigation, route }) {
 }
 
 const onRefresh = () => {
-  registerForPushNotificationsAsync().then(response => {
-    sendPushNotification(sendPushNotification);
-  });
+
   setRefreshing(true);
   FetchData(state.region).then(response => {
     let tmpState = JSON.parse(JSON.stringify(state));

@@ -9,16 +9,22 @@ import Details from './screens/details';
 import OnboardingScreen from './screens/onboarding';
 import SettingsScreen from './screens/settings';
 import {AppProvider} from './context/appContext';
+import AsyncStorageHelper from './helpers/asyncStorageHelper';
+/*
+Implement in the future, pushnotification background update
 import * as BackgroundFetch from "expo-background-fetch"
 import * as TaskManager from "expo-task-manager"
-
+import {sendPushNotification} from './helpers/pushNotificationHelper';
+import FetchData from './api/fetch';
 
 TaskManager.defineTask("PUSH_TASK", () => {
   try {
     // fetch data here...
     const receivedNewData = "Simulated fetch " + Math.random();
-    console.log("My task ", receivedNewData);
-    console.log("WOO");
+    FetchData("Stockholm").then(result => {
+      console.log("Result")
+    });
+    console.log("Update");
     return receivedNewData
       ? BackgroundFetch.Result.NewData
       : BackgroundFetch.Result.NoData
@@ -40,11 +46,20 @@ RegisterBackgroundTask = async () => {
 }
 
 RegisterBackgroundTask();
-
+registerForPushNotificationsAsync().then(response => {
+  sendPushNotification(sendPushNotification);
+});
+*/
 const Stack = createStackNavigator();
 
 function App() {
-  const navigationRef = useRef(null)
+  const navigationRef = useRef(null);
+  var initialRoute = "Home"
+  AsyncStorageHelper.get("@app:onboarding").then(result => {
+    if(!result){
+      navigationRef.current?.navigate("Onboarding");
+    }
+  });
   return (
     <AppProvider>
     <NavigationContainer ref={navigationRef}>
@@ -82,6 +97,7 @@ function App() {
             backgroundColor: '#0c3256',
           },
           headerTintColor: '#fff',
+          headerLeft: null,
         }} />
         <Stack.Screen name="Settings" component={SettingsScreen}
           options={{

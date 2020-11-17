@@ -2,14 +2,16 @@ import React,{useState,useContext} from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Kommuner from '../../api/kommuner';
 import {AppContext} from '../../context/appContext';
+import AsyncStorageHelper from '../../helpers/asyncStorageHelper';
 
-
+export function UpdateRegion(setState,state,region){
+  setState({...state,region: region});
+  console.log("region",region);
+  AsyncStorageHelper.set("@app:region",region);
+}
 export default function SetRegion(){
   const [state,setState] = useContext(AppContext);
-
-  const Update = (value) => {
-    setState({...state,region: value.value});
-  }
+  
   const GetLabels = () => {
     const Labels = [];
     Kommuner.map((kommun) => Labels.push({label: kommun, value: kommun}));
@@ -28,7 +30,7 @@ export default function SetRegion(){
             justifyContent: 'flex-start'
         }}
         dropDownStyle={{backgroundColor: '#fafafa',width: '100%'}}
-        onChangeItem={Update}
+        onChangeItem={(e) => UpdateRegion(setState,state,e.value)}
     />
     </>
   );

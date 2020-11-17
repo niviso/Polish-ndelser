@@ -2,10 +2,12 @@ import React from 'react';
 import { Button,Text,Image,} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import SetRegion from '../components/setRegion';
+import AsyncStorageHelper from '../helpers/asyncStorageHelper';
 
 export default function OnboardingScreen({ navigation, route }) {
   const Done = () => {
     navigation.navigate('Home');
+    AsyncStorageHelper.set("@app:onboarding","done");
   }
   return (
     <>
@@ -25,12 +27,12 @@ export default function OnboardingScreen({ navigation, route }) {
           backgroundColor: '#fff',
           image: <Image source={require('../assets/icons/gps.png')} style={{width: 200,height: 200}}/>,
           title: 'Se uppdateringar direkt ifrån ditt område',
-          subtitle: 'Du kan välja reigon i ⚙ inställningar',
+          subtitle: 'Du kan välja reigon i ⚙ inställningar.',
         },{
             backgroundColor: '#fff',
             image: <Image source={require('../assets/icons/Stalk.png')} style={{width: 200,height: 200,marginLeft: 60}}/>,
-            title: 'Aktivera pushnotiser för att få händelserna direkt',
-            subtitle: 'Du kan aktivera pushnotiser i ⚙ inställningar',
+            title: 'Använd appen ansvarsfullt',
+            subtitle: 'Stör aldrig poliser i deras arbete.',
           },
       ]}
       onDone={() => Done()}
