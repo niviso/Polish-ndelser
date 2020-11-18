@@ -10,13 +10,15 @@ import AsyncStorageHelper from '../helpers/asyncStorageHelper';
 export default function Home({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
   const [state,setState] = useContext(AppContext);
-
+  const [loaded,setLoaded] = useState(false);
   useEffect(()=>{
     AsyncStorageHelper.get("@app:region").then(result => {
+      setLoaded(true);
       setState({...state,region: result || ''});
     });
     navigation.setOptions({ title: 'Händelser i ' + (state.region.length === 0 ? 'hela Sverige' : state.region) });
-    if(!refreshing){
+
+    if(!refreshing && loaded){
     onRefresh();
     }
   },[state.region]);
@@ -25,7 +27,7 @@ export default function Home({ navigation, route }) {
 
     const GetDate = (date) => {
       date = date.split(" +")[0];
-      return null;
+
       if(!moment(date).isValid()){
         date = date.replace(" "," 0");
       }

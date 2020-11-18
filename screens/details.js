@@ -10,8 +10,8 @@ import moment from 'moment';
 export default function Details({ navigation, route }) {
   const {item} = route.params;
   useEffect(()=>{
-    navigation.setOptions({ title: item.name });
-  })
+    navigation.setOptions({ title: item.name.split(', ')[1]});
+  },[])
   return (
     <View contentContainerStyle={{ width: '100%',height:'100%',display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
     <MapView initialRegion={{

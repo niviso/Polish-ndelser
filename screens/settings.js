@@ -21,14 +21,14 @@ export default function SettingsScreen({ navigation, route }) {
     <View style={{display: 'flex',justifyContent:'space-between',height: '100%',width: '100%',paddingBottom: 20}}>
     <View>
       <View style={{width: '100%',paddingLeft: 15,paddingRight: 15,height: 60,borderBottomColor:'black',borderBottomWidth: 2,borderBottomStyle: 'solid',display: 'flex',flexDirection: 'row',alignItems:'center',justifyContent:'space-between'}}>
-      <Text style={{fontSize: 18}}>🌎 Hela Sverige</Text>
+      <Text style={{fontSize: 16}}>🌎 Se alla ärenden</Text>
       <Switch
         onValueChange={Update}
         value={hasWorld}
       />
       </View>
       <View style={{width: '100%',paddingLeft: 15,paddingRight: 15,height: 60,borderBottomColor:'black',borderBottomWidth: 2,borderBottomStyle: 'solid',display: 'flex',flexDirection: 'row',alignItems:'center',justifyContent:'space-between',opacity: hasWorld ? 0.5 : 1}} pointerEvents={hasWorld}>
-      <Text style={{fontSize: 18}}>🗺️ Region: </Text>
+      <Text style={{fontSize: 16}}>🗺️ Se ärenden i region: </Text>
       <View style={{width: '50%'}}>
       <SetRegion/>
       </View>

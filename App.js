@@ -69,7 +69,7 @@ function App() {
 }}>
         <Stack.Screen name="Home" component={Home}
           options={{
-          title: 'Händelser i Stockholm',
+          title: 'Laddar',
           headerRight: () => (
             <Button
               onPress={() => navigationRef.current?.navigate('Settings')}
