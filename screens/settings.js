@@ -4,14 +4,27 @@ import Onboarding from 'react-native-onboarding-swiper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Kommuner from '../api/kommuner';
 import {AppContext} from '../context/appContext';
-import SetRegion,{UpdateRegion} from '../components/setRegion';
+import SetRegion from '../components/setRegion';
+import AsyncStorageHelper from '../helpers/asyncStorageHelper';
+
+
 export default function SettingsScreen({ navigation, route }) {
   const [hasWorld,setWorld] = useState(false);
-  const [state,setState] = useContext(AppContext);
+  const [state,setState] = useContext(AppContext)
+  const UpdateRegion = (region) => {
+    setState({...state,region: region,lastRegion: state.region});
+    AsyncStorageHelper.set("@app:region",region);
+  }
+
   const Update = (bool) => {
     setWorld(bool);
-    UpdateRegion(setState,state,'');
+    if(bool){
+      UpdateRegion('#');
+    } else {
+      UpdateRegion(state.lastRegion);
+    }
   }
+
 
   useEffect(() => {
     setWorld(state.region.length === 0)
@@ -29,7 +42,8 @@ export default function SettingsScreen({ navigation, route }) {
       </View>
       <View style={{width: '100%',paddingLeft: 15,paddingRight: 15,height: 60,borderBottomColor:'black',borderBottomWidth: 2,borderBottomStyle: 'solid',display: 'flex',flexDirection: 'row',alignItems:'center',justifyContent:'space-between',opacity: hasWorld ? 0.5 : 1}} pointerEvents={hasWorld}>
       <Text style={{fontSize: 16}}>🗺️ Se ärenden i region: </Text>
-      <View style={{width: '50%'}}>
+      <View style={{width: '40%'}}>
+
       <SetRegion/>
       </View>
       </View>

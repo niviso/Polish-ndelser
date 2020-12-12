@@ -7,8 +7,10 @@ const AppProvider = (props) => {
   const [state,setState] = useContext(AppContext);
 
     const [appState, setAppState] = useState({
+    init: false,
     currentDate: moment().format('YYYY-MM-DD'),
     region: "",
+    lastRegion: "",
     lastUpdated: moment().format('YYYY-MM-DD'),
     data: []
   });

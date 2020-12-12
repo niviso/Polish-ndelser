@@ -1,37 +1,35 @@
 import React,{useState,useContext} from 'react';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Kommuner from '../../api/kommuner';
 import {AppContext} from '../../context/appContext';
 import AsyncStorageHelper from '../../helpers/asyncStorageHelper';
+import { StyleSheet, Text, View, TextInput } from "react-native";
+import RNPickerSelect from 'react-native-picker-select';
 
-export function UpdateRegion(setState,state,region){
-  setState({...state,region: region});
-  console.log("region",region);
-  AsyncStorageHelper.set("@app:region",region);
-}
 export default function SetRegion(){
   const [state,setState] = useContext(AppContext);
-  
+
+
+  const UpdateRegion = (region) => {
+    setState({...state,region: region,lastRegion: state.region});
+    AsyncStorageHelper.set("@app:region",region);
+  }
+
   const GetLabels = () => {
     const Labels = [];
     Kommuner.map((kommun) => Labels.push({label: kommun, value: kommun}));
+    Labels.push({label: 'Hela Sverige', value: '#'});
     return Labels;
+
   }
-  return(
-    <>
-    <DropDownPicker
-        items={GetLabels()}
-        searchable
-        searchablePlaceholder="Sök efter din kommun"
-        defaultValue={state.region}
-        containerStyle={{height: 40,width: '100%'}}
-        style={{backgroundColor: '#fafafa', width: '100%'}}
-        itemStyle={{
-            justifyContent: 'flex-start'
-        }}
-        dropDownStyle={{backgroundColor: '#fafafa',width: '100%'}}
-        onChangeItem={(e) => UpdateRegion(setState,state,e.value)}
-    />
-    </>
-  );
+    const Labels = GetLabels();
+    return (
+      <>
+      <RNPickerSelect
+          onValueChange={UpdateRegion}
+          items={Labels}
+          value={state.region}
+      />
+      </>
+    );
+
 }
